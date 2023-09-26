@@ -7,7 +7,7 @@
 </head>
 <body>
  
-    <form action="ej14_Tratamiento.php" method="get">
+    <form action="ej14_Tratamiento.php" method="post" enctype="multipart/form-data">
         <fieldset>
 
             <legend>Datos Personales</legend>
@@ -59,7 +59,7 @@
             <div>
                 <label>Nº de hijos</label>
                 <br/>
-                <select name="nHihos">
+                <select name="nHijos">
                     <option>0</option>
                     <option>1</option>
                     <option selected="selected">2</option>
