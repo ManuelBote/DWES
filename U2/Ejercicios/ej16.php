@@ -19,7 +19,7 @@
 
         <br>
         <input type="submit" value="Crear" name="crear">
-        <br>
+        <br/>
 
         <?php
 
@@ -27,17 +27,16 @@
 
                 for($i=1;$i<=$_POST['numAlum'];$i++){
                     echo '<div>';
-                    echo '<label>Alumno '.$i.'</label>';
+                    echo '<label>Alumno '.$i.' </label>';
                     if(isset($_POST['nombres'][$i-1]))
                         $nombre= $_POST['nombres'][$i-1];
                     else
                         $nombre='';
                     echo '<input type="text" name="nombres[]" value="'.$nombre.'">';
                     echo '</div>';
+                    echo '<br>';
                 }
         ?>
-
-        <br>
         <input type="submit" name="mostrar" value="Mostrar">
         <br>
 
