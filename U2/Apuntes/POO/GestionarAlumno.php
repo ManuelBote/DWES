@@ -1,5 +1,6 @@
 <?php
 include_once 'Alumno.php';
+include_once 'accesoDatos.php';
 ?>
 
 <!DOCTYPE html>
@@ -33,8 +34,22 @@ include_once 'Alumno.php';
    <?php
    //Se crea el objeto y se muestra
    if(isset($_POST['crear'])){
-        $a = new Alumno($_POST['numEx'], $_POST['nombre'], strtotime($_POST['fechaN']));
-        $a->mostrar();
+        $a = new Alumno($_POST['numEx'], $_POST['nombre'], strtotime($_POST['fecha']));
+
+        //Chequear si el nº de expediente no existe en el fichero
+        //Si existe, se debe lanzar un error
+        $alTmp=obtenerAlumno($a->getNumEx());
+
+        if($alTmp==null){
+            if(crearAlumno($a)){
+                //Guardar alumno en el fichero
+                echo '<p style="color:blue;">Alumno creado: '.$a->mostrar().'<p>';
+            }else{
+                echo '<p style="color:red;">Error al crear alumno</p>';
+            }
+        }else{
+            echo '<p style="color:red;">El alumno ya existe</p>';
+        }
    }
 
    ?>
