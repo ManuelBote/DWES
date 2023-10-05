@@ -50,9 +50,31 @@ include_once 'accesoDatos.php';
         }else{
             echo '<p style="color:red;">El alumno ya existe</p>';
         }
-   }
+    }
+    ?>
 
-   ?>
+    <!--Mostrar alumnos-->
+    <h1>LISTADO DE ALUMNOS</h1>
+    <hr>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Fecha nacimiento</th>
+        </tr>
+        <?php
+        //Obtener en un array todos los alumnos que hay en el fichero
+        //$alumnos va a ser un array de objetos Alumnos
+        $alumnos=obtenerAlumnos();
+        foreach($alumnos as $a){
+            echo '<tr>';
+            echo '<td>'.$a->getNumEx().'</td>';
+            echo '<td>'.$a->getNombre().'</td>';
+            echo '<td>'.date('d/m/Y',$a->getFechaN()).'</td>';
+            echo '</tr>';
+        }
+        ?>  
+    </table>
     
 </body>
 </html>
