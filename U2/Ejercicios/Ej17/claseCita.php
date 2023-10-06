@@ -13,6 +13,23 @@
             $this->tipoServicio=$tipoServicio;
         }
 
+        public function obtenerTipoServicio(){
+            switch($this->tipoServicio) {
+                case '1': return 'Corte Señora';
+                case '2': return 'Corte Caballero';
+                case '3': return 'Tinte';
+                case '4': return 'Mechas';
+            }
+        }
+
+        public function obtenerTiempoServicio(){
+            switch($this->tipoServicio) {
+                case '1': return '30';
+                case '2': return '15';
+                case '3': return '120';
+                case '4': return '180';
+            }
+        }
         
 
 

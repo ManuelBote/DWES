@@ -15,7 +15,7 @@ $ad = new Modelo();
     <form action="" method="post">
         <div>
             <input type="date" name="fecha" value="<?php echo date('d/m/Y'); ?>">
-            <input type="time" name="hora" value="<?php echo date('h/i');?>">
+            <input type="time" name="hora" value="<?php echo date('H/i');?>">
         </div>
         <div>
             <label for="nombre">Nombre del cliente</label>
@@ -57,12 +57,34 @@ $ad = new Modelo();
                 } else{
                     echo '<h3 style="color:red">Cita no creada</h3>';
                 }
-            }
-            
-
-            
+            } 
         } 
 
+        $citas=$ad->obtenerCitas();
+
     ?>
+
+    <table width="50%" align="center">
+        <tr>
+            <td><b>Fecha</b></td>
+            <td><b>Hora</b></td>
+            <td><b>Cliente</b></td>
+            <td><b>Tipo Servicio</b></td>
+            <td><b>Duracion</b></td>
+            <td><b>Hora de fin</b></td>
+        </tr>
+        <?php
+            foreach($citas as $c){
+                echo '<tr>';
+                echo '<td>'.date('d/m/Y', strtotime($c->getFecha())).'</td>';
+                echo '<td>'.$c->getHora().'</td>';
+                echo '<td>'.$c->getNombre().'</td>';
+                echo '<td>'.$c->obtenerTipoServicio().'</td>';
+                echo '<td>'.$c->obtenerTiempoServicio().'</td>';
+                echo '<td>'.date('H:i',strtotime('1970-01-01'.$c->getHora())+($c->obtenerTiempoServicio()*60)).'</td>';
+                echo '</tr>';
+            }
+        ?>
+    </table>
 </body>
 </html>
