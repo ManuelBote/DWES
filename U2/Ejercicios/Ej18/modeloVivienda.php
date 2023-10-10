@@ -20,21 +20,38 @@
                             $v->getDireccion().';'.
                             $v->getNumHabitacion().';'.
                             $v->getPrecio().';'.
-                            $v->getTamanio().';');
+                            $v->getTamanio().';'.
+                            $v->getExtras().';'.
+                            $v->getObservaciones().PHP_EOL);
 
-                if(empty($v->getExtras())){
-                    if(empty($v->getObservaciones())){
-                        fwrite($f, PHP_EOL);
-                    }else{
-
-                    }
-                }else{
-
-                }
+                $resultado = true;
 
             } catch (\Throwable $th) {
                 echo $th->getMessage();
             }
+            finally{
+                if($f!=null){
+                    fclose($f);
+                }
+            }
+
+            return $resultado;
+        }
+
+        function obtenerViviendas(){
+            $resultado = array();
+
+            if(file_exists($this->nomFichero)){
+                $fichero=file($this->nomFichero);
+                foreach($fichero as $linea){
+                    $datos=explode(';',$linea);
+                    $vivien=new Vivienda($datos[0],$datos[1],$datos[2],$datos[3],$datos[4],$datos[5]);
+                    $vivien->setExtras($datos[6]);
+                    $vivien->setObservaciones($datos[7]);
+                    $resultado[]=$vivien;
+                }
+            }
+            return $resultado;
         }
     }
 

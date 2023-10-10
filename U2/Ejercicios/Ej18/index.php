@@ -12,24 +12,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        form{
+            border: 1px solid black;
+            padding: 20px;
+            width: 40%;
+            margin-left: 30%;
+            border-radius: 1rem;
+        }
+        table, th, tr, td{
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            text-align: center;
+
+        }
+    </style>
 </head>
-<body>
+<body style="text-align: center;">
+
+    <h1>Formulario de viviendas</h1>
     
-    <form action="" method="post">
+    <form action="" method="post" align="center">
         <div>
             <laber for="tipo">Selecciona el tipo de vivienda: </laber>
             <select name="tipoV">
-                <option value="Adosado">Adosado</option>
-                <option value="Unifamiliar">Unifamiliar</option>
-                <option value="Piso">Piso</option>
+                <option>Adosado</option>
+                <option>Unifamiliar</option>
+                <option>Piso</option>
             </select>
         </div>
 
         <div>
             <laber for="zona">Selecciona la zona: </laber>
             <select name="zona">
-                <option value="Centro">Centro</option>
-                <option value="Periferia">Periferia</option>
+                <option>Centro</option>
+                <option>Periferia</option>
             </select>
         </div>
         <div>
@@ -62,7 +83,7 @@
         <div>
             <label for="observaciones">Observaciones</label>
             <br>
-            <textarea name="observaciones" rows="10" cols="20"
+            <textarea name="observaciones" rows="10" cols="40"
             value="<?php echo (isset($_POST['observaciones'])?$_POST['observaciones']:"") ?>"></textarea>
         </div>
         <br>
@@ -74,7 +95,8 @@
         //Se pulsa el boton
         if(isset($_POST['crear'])){
             //Se conmpruba que todo esta rellenado
-            if(empty($_POST['direccion']) or empty($_POST['precio']) or empty($_POST['tamanio'])){
+            if(empty($_POST['tipoV']) or empty($_POST['zona']) or empty($_POST['direccion']) or 
+                empty($_POST['numH']) or empty($_POST['precio']) or empty($_POST['tamanio'])){
                 echo '<h3 style="color:red">Debes rellenar todos los campos</h3>';
             } else{
                 $vivienda= new Vivienda($_POST['tipoV'],
@@ -84,22 +106,67 @@
                                         $_POST['precio'],
                                         $_POST['tamanio'],);
 
-                if(!empty($_POST['extra'])){
-                    $totalExtra;
-                    foreach($_POST['extra'] as $extra){
-                        $totalExtra=$extra.", ";
-                    }
-                    $vivienda->setExtras($totalExtra);
+                if(isset($_POST['extra'])){
+                    $totalExtra=implode(',', $_POST['extra']);
+                } else{
+                    $totalExtra='';
                 }
                 
-                if(!empty($_POST['observaciones'])){
-                    $vivienda->setObservaciones($_POST['observaciones']);
-                }
+                $vivienda->setExtras($totalExtra);
+                $vivienda->setObservaciones($_POST['observaciones']);
                 
+
+                if($model->crearVivienda($vivienda)){
+                    echo '<h3 style="color:blue">Vivienda creada</h3>';
+                } else{
+                    echo '<h3 style="color:red">Vivienda no creada</h3>';
+                }
             }
         }
-    
+
+        $viviendasTotal=$model->obtenerViviendas();
+
+        if(file_exists('viviendas.txt')){
+
     ?>
+
+        <br><br>
+        <table align="center">
+            <tr>
+                <th>Tipo de vivienda</th>
+                <th>Zona</th>
+                <th>Direccion</th>
+                <th>Nº de habitaciones</th>
+                <th>Precio</th>
+                <th>Tamaño</th>
+                <th>Extras</th>
+                <th>Observaciones</th>
+            </tr>
+            <?php
+                foreach($viviendasTotal as $v){
+                    //$v=new Vivienda();
+                    echo '<tr>';
+                        echo '<td>'.$v->getTipo().'</td>';
+                        echo '<td>'.$v->getZona().'</td>';
+                        echo '<td>'.$v->getDireccion().'</td>';
+                        echo '<td>'.$v->getNumHabitacion().'</td>';
+                        echo '<td>'.$v->getPrecio().'</td>';
+                        echo '<td>'.$v->getTamanio().'</td>';
+                        echo '<td>'.$v->getExtras().'</td>';
+                        echo '<td>'.$v->getObservaciones().'</td>';
+                    echo '<tr>';
+
+                }
+            ?>
+        </table>
+
+    <?php
+        } else{
+            echo '<h3 style="color:red">No hay ninguna vivienda creada</h3>';
+        }
+    ?>
+
+    
 
 </body>
 </html>
