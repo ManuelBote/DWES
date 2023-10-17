@@ -54,11 +54,11 @@
             }
 
             if(isset($array)){
-                $opciones = implode(',', $array[]);
+                $opciones = implode(',', $array);
             }
 
             if($this->opcion1==false && $this->opcion2==false && $this->opcion3==false){
-                $opciones= null;
+                $opciones= 'No';
             }
 
             return $opciones;

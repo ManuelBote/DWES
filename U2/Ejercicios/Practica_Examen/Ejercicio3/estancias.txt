@@ -1,0 +1,3 @@
+535235;aaa;Doble;3;1;165;Tarjeta;
+535235;aaa;Doble;3;1;165;Tarjeta;Cama suplementaria
+234234;fadsfa;Suite;4;2;330;Tarjeta;No
