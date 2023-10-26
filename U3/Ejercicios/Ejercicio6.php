@@ -1,23 +1,23 @@
 <?php
-        if(isset($_POST['tirar'])){
-            if(empty($_POST['nombre'])){
-                $mensaje= '<spam style="color:red;">**Debes rellenar el campo nombre jugador</spam>';
-            } else{
-                session_start();
-                //Recuperar datos si existen
-                if(isset($_SESSION['jugadores'])){
-                    $jugadores = $_SESSION['jugadores'];
-                }
-                //Generar numero
-                $numero = rand(1,6);
-                //Guardar datos array
-                $jugadores[]=[$_POST['nombre']=>$numero];
-                //Guardar en la sesion
-                $_SESSION['jugadores']=$jugadores;
+    session_start();
+    if(isset($_POST['tirar'])){
+        if(empty($_POST['nombre'])){
+            $mensaje= '<spam style="color:red;">**Debes rellenar el campo nombre jugador</spam>';
+        } else{
+            //Recuperar datos si existen
+            if(isset($_SESSION['jugadores'])){
+                $jugadores = $_SESSION['jugadores'];                
             }
-        }else if(isset($_POST['borrar'])){
-
+            //Generar numero
+            $numero = rand(1,6);
+            //Guardar datos array
+            $jugadores[$_POST['nombre']]=$numero;
+            //Guardar en la sesion
+            $_SESSION['jugadores']=$jugadores;
         }
+    }else if(isset($_POST['borrar'])){
+        session_unset();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -43,6 +43,7 @@
         <div>
             <input type="submit" name="tirar" value="Tirar dado">
         </div>
+        <br>
         <?php
             //Mostrar tirada
             if(isset($_SESSION['jugadores'])){
@@ -52,6 +53,7 @@
             }
            
         ?>
+        <br>
         <div>
             <input type="submit" name="borrar" value="Borrar Jugadores">
         </div>
