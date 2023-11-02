@@ -20,6 +20,46 @@
 
         }
 
+        function insertarPieza(Pieza $p){
+            $resultado = false;
+            
+            try {
+                $consulta = $this->conexion->prepare('insert into pieza values (?,?,?,?,?)');
+                $parms = array($p->getCodigo(), $p->getClase(), $p->getDescripcion(), $p->getPrecio(), $p->getStock());
+                if($consulta->execute($parms)){
+                    $resultado=true;
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+            }
+
+            return $resultado;
+        }
+
+        function obtenerPieza($codigo){
+            $resultado = null;
+
+            try {
+                $consulta = $this->conexion->prepare('select * from pieza where codigo = ?');
+                $parms = array($codigo);
+                if($consulta->execute($parms)){
+                    //recuperar el registro y crear un objeto pieza en resultado
+                    if($fila=$consulta->fetch()){
+                        $resultado = new Pieza();
+                        $resultado->setCodigo($fila['codigo']);
+                        $resultado->setClase($fila['clase']);
+                        $resultado->setDescripcion($fila['descripcion']);
+                        $resultado->setPrecio($fila['precio']);
+                        $resultado->setStock($fila['stock']);
+                    }
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+            }
+
+            return $resultado;
+        }
+
         function obtenerPiezas(){
             //Devuelve un array de piezas
             $resultado = array();
@@ -46,6 +86,46 @@
 
             return $resultado;
         }
+
+        function existenReparaciones(string $codigo){
+            $resultado = false;
+
+            try {
+                $consulta = $this->conexion->prepare('select * from piezareparacion where pieza= ?');
+                $parametro = array($codigo);
+                if($consulta->execute($parametro)){
+                    if($consulta->fetch()){
+                        $resultado = true;
+                    }
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+            }
+
+            return $resultado;
+        }
+
+        function borrarPieza(string $codigo){
+            $resultado = false;
+
+            try {
+                $consulta = $this->conexion->prepare('delete from pieza where codigo= ?');
+                $parametro = array($codigo);
+                if($consulta->execute($parametro)){
+                    //Comprobar si se a borrado al menos un registro
+                    //En ese caso devuelve true
+                    if($consulta->rowCount() == 1){
+                        $resultado = true;
+                    }
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+            }
+
+            return $resultado;
+        }
+
+        
 
 
         /**
