@@ -1,6 +1,7 @@
 <?php
 
     require_once 'Pieza/pieza.php';
+    require_once 'Usuario/usuario.php';
 
     class Modelo{
         private $conexion;
@@ -19,6 +20,105 @@
             }
 
         }
+
+        
+    function obtenerUsuario(string $us, string $ps)
+    {
+        $resultado = null;
+        try {
+            $consulta = $this->conexion->prepare('select * from usuarios 
+                            where dni = ? and ps = sha2(?,512)');
+            $params = array($us, $ps);
+            if ($consulta->execute($params)) {
+                //Ver si se ha devuelto 1 registro con el usuario
+                if ($fila = $consulta->fetch()) {
+                    //Se ha encontrado el usuario
+                    $resultado = new Usuario(
+                        $fila['id'],
+                        $fila['dni'],
+                        $fila['nombre'],
+                        $fila['perfil']
+                    );
+                }
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return $resultado;
+    }
+
+    function obtenerUsuarioDni(string $dni){
+        $resultado = null;
+        try {
+            $consulta = $this->conexion->prepare('select * from usuarios where dni = ?');
+            $params = array($dni);
+            if ($consulta->execute($params)) {
+                //Ver si se ha devuelto 1 registro con el usuario
+                if ($fila = $consulta->fetch()) {
+                    //Se ha encontrado el usuario
+                    $resultado = new Usuario(
+                        $fila['id'],
+                        $fila['dni'],
+                        $fila['nombre'],
+                        $fila['perfil']
+                    );
+                }
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return $resultado;
+    }
+    
+    function obtenerUsuarios(){
+        //Devuelve un array de piezas
+        $resultado = array();
+
+        try {
+            //Ejecutamos consulta
+            $datos = $this->conexion->query('select * from usuarios order by perfil, nombre');  
+            if($datos != false){
+                //Recorrer los datos para crear onjetos pieza
+                while ($fila = $datos->fetch()){
+                    $u= new Usuario(
+                    $fila['id'],
+                    $fila['dni'],
+                    $fila['nombre'],
+                    $fila['perfil']
+                );
+
+                    //Añadir resultado
+                    $resultado[] = $u;
+                }
+            }
+        } catch (PDOException $th) {
+            echo $th->getMessage();
+        }
+
+        return $resultado;
+    }
+
+    function crearUsuario($u){
+        $resultado = false;
+
+        try {
+            $consulta = $this->conexion->prepare('insert into usuarios value(default,?,?,sha2(?,512),?)');
+            $param = array($u->getDni(), $u->getNombre(), $u->getDni(), $u->getPerfil());
+            if($consulta->execute($param)){
+                if($consulta->rowCount()==1){
+                    $u->setId($this->conexion->lastInsertId());
+                    $resultado=true;
+                }
+            }
+        } catch (PDOException $th) {
+            echo $th->getMessage();
+        }
+
+        return $resultado;
+
+    }
+
+
 
         function insertarPieza(Pieza $p){
             $resultado = false;
@@ -122,6 +222,22 @@
                 echo $th->getMessage();
             }
 
+            return $resultado;
+        }
+
+        function modificarPieza(Pieza $p, string $codigoAntiguo){
+            $resultado = false;
+            try {
+                $consulta = $this->conexion->prepare("update pieza set codigo=?, clase=?, descripcion=?, precio=?, stock=? where codigo=?");
+                $param = array($p->getCodigo(), $p->getClase(), $p->getDescripcion(), $p->getPrecio(), $p->getStock(), $codigoAntiguo);
+                if($consulta->execute($param)){
+                    if($consulta->rowCount() == 1){
+                        $resultado=true;
+                    }
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+            }
             return $resultado;
         }
 

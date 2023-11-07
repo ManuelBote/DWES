@@ -29,6 +29,27 @@
                     $mensaje = array('e', 'Pieza ya existente: '.$p->getCodigo().' '.$p->getDescripcion());
                 }
             }
+        } else if(isset($_POST['update'])){
+            if(empty($_POST['codigo']) or empty($_POST['clase']) or empty($_POST['desc']) or empty($_POST['precio']) or empty($_POST['stock'])){
+                $mensaje = array('e', 'Debes rellenar todos los campos');
+            } else{
+                $p = $bd->obtenerPieza($_POST['codigo']);
+                if($p == null or $p->getCodigo()==$_POST['update']){
+                    $p=new Pieza();
+                    $p->setCodigo($_POST['codigo']);
+                    $p->setClase($_POST['clase']);
+                    $p->setDescripcion($_POST['desc']);
+                    $p->setPrecio($_POST['precio']);
+                    $p->setStock($_POST['stock']);
+                    if($bd->modificarPieza($p, $_POST['update'])){
+                        $mensaje=array('i', 'Pieza modificada');
+                    }else {
+                        $mensaje=array('e', 'Error al modificar la pieza');
+                    }
+                }else {
+                    $mensaje = array('e', 'Pieza ya existente una pieza con codigo '.$p->getCodigo());
+                }
+            }
         } else if(isset($_POST['borrar'])){
             //Chequear que la pieza exista
             $p = $bd->obtenerPieza($_POST['borrar']);
@@ -72,131 +93,15 @@
 
         <section>
             <!--Crear Pieza-->
-            <br>
-            <div class="container p-2 my-5 border">
-                <form action="#" method="post">
-                    <div class="row">
-                        <!--Codigo-->
-                        <div class="col">
-                            <label>Codigo</label>
-                            <input type="text" name="codigo" placeholder="F01" maxlength="3">
-                        </div>
-                        <!--Clase-->
-                        <div class="col">
-                            <label>Clase</label>
-                            <select name="clase" class="form-select form-select-sm">
-                                <option>Refrigeración</option>
-                                <option>Filtro</option>
-                                <option>Motor</option>
-                                <option>Otros</option>
-                            </select>
-                        </div>
-                        <!--Descripcion-->
-                        <div class="col">
-                            <label>Descripcion</label>
-                        <input type="text" name="desc">
-                        </div>
-                        <div class="col">
-                            <label>Precio</label>
-                            <input type="number" name="precio" step="0.01">
-                        </div>
-                        <!--Stock-->
-                        <div class="col">
-                            <label>Stock</label>
-                        <input type="number" name="stock">
-                        </div>
-                        <!--Btn-->
-                        <div class="col">
-                            <input type="submit" name="crear" value="Crear" class="btn btn-outline-primary">
-                            <input type="reset" name="limpiar" value="Cancelar" class="btn btn-outline-primary">
-                        </div>
-                    </div>
-                </form>
-            </div>
+            <?php include_once 'crearPieza.php' ?>
         </section>
         <section>
             <!--Comunicar mensajes-->
-            <?php
-                if(isset($mensaje)){
-                    if($mensaje[0]=='e'){
-                        echo ' <div class="container p-5 my-5 border"><h3 class="text-danger">'.$mensaje[1].'<h3></div>';
-                    } else{
-                        echo ' <div class="container p-5 my-5 border"><h3 class="text-success">'.$mensaje[1].'<h3></div>';
-                    }
-                }
-            ?>
+            <?php include_once '../verMensaje.php' ?>
         </section>
         <section>
-            <!--Motrar piezas y dar opcion a modificar o borrar-->
-            <?php
-                //Obtener piezas
-                if($bd->getConexion()!=null){
-                    $piezas = $bd->obtenerPiezas();
-            ?>
-            <div class="container p-5 my-5 border">
-                <form action="" method="post">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Codigo</th>
-                                <th>Clase</th>
-                                <th>Descripcion</th>
-                                <th>Precio</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                foreach($piezas as $p){
-                                    echo '<tr>';
-                                    echo '<td>'.$p->getCodigo().'</td>';
-                                    echo '<td>'.$p->getClase().'</td>';                                    
-                                    echo '<td>'.$p->getDescripcion().'</td>';
-                                    echo '<td>'.$p->getPrecio().'</td>';
-                                    echo '<td>'.$p->getStock().'</td>';
-                                    echo '<td>'; 
-                                        echo '<button type="submit" class="btn btn-outline-secondary" name="modif" value="'.$p->getCodigo().'"><img src="../img/modif25.png"></button>';
-                                        echo '<button type="button" class="btn btn-outline-secondary" name="avisar" value="" data-bs-toggle="modal" data-bs-target="#a'.$p->getCodigo().'"><img src="../img/delete25.png"></button>';
-                                    echo'</td>';
-                                    echo '</tr>';
-
-                                    //Definir ventana modal
-                            ?>
-                                <!-- The Modal -->
-                                <div class="modal" id="a<?php echo $p->getCodigo(); ?>">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-
-                                        <!-- Modal Header -->
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Borrar pieza</h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-                                        <!-- Modal body -->
-                                        <div class="modal-body">
-                                            ¿Está seguro de borrar la pieza?
-                                        </div>
-
-                                        <!-- Modal footer -->
-                                        <div class="modal-footer">
-                                            <button type="submit" name="borrar" value="<?php echo $p->getCodigo();?>" class="btn btn-danger" data-bs-dismiss="modal">Borrar</button>
-                                        </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
-                                }
-                            ?>
-                        </tbody>
-                    </table>
-                </form>
-
-            </div>
-            <?php
-                }
-            ?>
+            <!-- Visualizar piezas-->
+            <?php include_once 'listarPiezas.php' ?>
         </section>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
