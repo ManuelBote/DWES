@@ -4,6 +4,12 @@
     if($bd->getConexion()==null){
         $mensaje = array('e','Error no hay conexion con la base de datos');
     } else{
+        //Controlar el perfil del usuario
+        session_start();
+        if(isset($_SESSION['usuario']) and ($_SESSION['usuario']->getPerfil()!='A' and $_SESSION['usuario']->getPerfil()!='M')){
+            header('location:../Usuario/login.php');
+        }
+        session_write_close();
         //Boton crear
         if(isset($_POST['crear'])){
             if(empty($_POST['codigo']) or empty($_POST['clase']) or empty($_POST['desc']) or empty($_POST['precio']) or empty($_POST['stock'])){
@@ -54,7 +60,7 @@
             //Chequear que la pieza exista
             $p = $bd->obtenerPieza($_POST['borrar']);
             //Comprobar que se pueda borrar si no se ha usado en ninguna reparacion
-            if($bd->existenReparaciones($p->getCodigo())){
+            if($bd->existenReparacionesP($p->getCodigo())){
                 $mensaje=array('e', 'Error, no se puede borrar la pieza porque existen reparaciones');
             }else{
                 //Borrar pieza

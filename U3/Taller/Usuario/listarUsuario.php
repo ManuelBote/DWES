@@ -59,7 +59,7 @@
                                     //Definir ventana modal
                             ?>
                                 <!-- The Modal -->
-                                <div class="modal" id="a<?php echo $u->getId().', '.$u->getNombre(); ?>">
+                                <div class="modal" id="a<?php echo $u->getId(); ?>">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
 
@@ -71,7 +71,7 @@
 
                                         <!-- Modal body -->
                                         <div class="modal-body">
-                                            ¿Está seguro de borrar el Usuario?
+                                            ¿Está seguro de borrar el Usuario <?php echo $u->getDni().', '.$u->getNombre() ?>?
                                         </div>
 
                                         <!-- Modal footer -->

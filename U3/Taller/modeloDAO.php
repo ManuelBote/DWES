@@ -21,12 +21,15 @@
 
         }
 
+
+//----------------------------------------------------------------USUARIO----------------------------------------------------------------\\
         
+
     function obtenerUsuario(string $us, string $ps)
     {
         $resultado = null;
         try {
-            $consulta = $this->conexion->prepare('select * from usuarios 
+            $consulta = $this->conexion->prepare('SELECT * from usuarios 
                             where dni = ? and ps = sha2(?,512)');
             $params = array($us, $ps);
             if ($consulta->execute($params)) {
@@ -50,8 +53,31 @@
     function obtenerUsuarioDni(string $dni){
         $resultado = null;
         try {
-            $consulta = $this->conexion->prepare('select * from usuarios where dni = ?');
+            $consulta = $this->conexion->prepare('SELECT * from usuarios where dni = ?');
             $params = array($dni);
+            if ($consulta->execute($params)) {
+                //Ver si se ha devuelto 1 registro con el usuario
+                if ($fila = $consulta->fetch()) {
+                    //Se ha encontrado el usuario
+                    $resultado = new Usuario(
+                        $fila['id'],
+                        $fila['dni'],
+                        $fila['nombre'],
+                        $fila['perfil']
+                    );
+                }
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return $resultado;
+    }
+
+    function obtenerUsuarioId(int $id){
+        $resultado = null;
+        try {
+            $consulta = $this->conexion->prepare('SELECT * from usuarios where id = ?');
+            $params = array($id);
             if ($consulta->execute($params)) {
                 //Ver si se ha devuelto 1 registro con el usuario
                 if ($fila = $consulta->fetch()) {
@@ -76,7 +102,7 @@
 
         try {
             //Ejecutamos consulta
-            $datos = $this->conexion->query('select * from usuarios order by perfil, nombre');  
+            $datos = $this->conexion->query('SELECT * from usuarios order by perfil, nombre');  
             if($datos != false){
                 //Recorrer los datos para crear onjetos pieza
                 while ($fila = $datos->fetch()){
@@ -102,7 +128,7 @@
         $resultado = false;
 
         try {
-            $consulta = $this->conexion->prepare('insert into usuarios value(default,?,?,sha2(?,512),?)');
+            $consulta = $this->conexion->prepare('INSERT into usuarios value(default,?,?,sha2(?,512),?)');
             $param = array($u->getDni(), $u->getNombre(), $u->getDni(), $u->getPerfil());
             if($consulta->execute($param)){
                 if($consulta->rowCount()==1){
@@ -118,13 +144,67 @@
 
     }
 
+    function existenReparacionesU(int $id){
+        $resultado = false;
+
+        try {
+            $consulta = $this->conexion->prepare('SELECT * from reparacion where usuario= ?');
+            $parametro = array($id);
+            if($consulta->execute($parametro)){
+                if($consulta->fetch()){
+                    $resultado = true;
+                }
+            }
+        } catch (PDOException $th) {
+            echo $th->getMessage();
+        }
+
+        return $resultado;
+    }
+
+    function borrarUsuario(int $id){
+        $resultado = false;
+
+        try {
+            $consulta = $this->conexion->prepare('DELETE from usuarios where id= ?');
+            $parametro = array($id);
+            if($consulta->execute($parametro)){
+                if($consulta->rowCount() == 1){
+                    $resultado = true;
+                }
+            }
+        } catch (PDOException $th) {
+            echo $th->getMessage();
+        }
+
+        return $resultado;
+    }
+
+    function modificarUsuario(Usuario $u){
+        $resultado = false;
+        try {
+            $consulta = $this->conexion->prepare('UPDATE usuarios set dni=?, nombre=?, perfil=? where id=?');
+            $param = array($u->getDni(), $u->getNombre(), $u->getPerfil(), $u->getId());
+            if($consulta->execute($param)){
+                if($consulta->rowCount() == 1){
+                    $resultado=true;
+                }
+            }
+        } catch (PDOException $th) {
+            echo $th->getMessage();
+        }
+        return $resultado;
+    }
+
+
+//----------------------------------------------------------------PIEZA----------------------------------------------------------------\\
 
 
         function insertarPieza(Pieza $p){
             $resultado = false;
             
             try {
-                $consulta = $this->conexion->prepare('insert into pieza values (?,?,?,?,?)');
+                $consulta = $this->conexion->prepare('INSERT into pieza values (?,?,?,?,?)');
                 $parms = array($p->getCodigo(), $p->getClase(), $p->getDescripcion(), $p->getPrecio(), $p->getStock());
                 if($consulta->execute($parms)){
                     $resultado=true;
@@ -140,7 +220,7 @@
             $resultado = null;
 
             try {
-                $consulta = $this->conexion->prepare('select * from pieza where codigo = ?');
+                $consulta = $this->conexion->prepare('SELECT * from pieza where codigo = ?');
                 $parms = array($codigo);
                 if($consulta->execute($parms)){
                     //recuperar el registro y crear un objeto pieza en resultado
@@ -166,7 +246,7 @@
 
             try {
                 //Ejecutamos consulta
-                $datos = $this->conexion->query('select * from pieza');  
+                $datos = $this->conexion->query('SELECT * from pieza');  
                 if($datos != false){
                     //Recorrer los datos para crear onjetos pieza
                     while ($fila = $datos->fetch()){
@@ -187,11 +267,11 @@
             return $resultado;
         }
 
-        function existenReparaciones(string $codigo){
+        function existenReparacionesP(string $codigo){
             $resultado = false;
 
             try {
-                $consulta = $this->conexion->prepare('select * from piezareparacion where pieza= ?');
+                $consulta = $this->conexion->prepare('SELECT * from piezareparacion where pieza= ?');
                 $parametro = array($codigo);
                 if($consulta->execute($parametro)){
                     if($consulta->fetch()){
@@ -209,7 +289,7 @@
             $resultado = false;
 
             try {
-                $consulta = $this->conexion->prepare('delete from pieza where codigo= ?');
+                $consulta = $this->conexion->prepare('DELETE from pieza where codigo= ?');
                 $parametro = array($codigo);
                 if($consulta->execute($parametro)){
                     //Comprobar si se a borrado al menos un registro
@@ -228,7 +308,7 @@
         function modificarPieza(Pieza $p, string $codigoAntiguo){
             $resultado = false;
             try {
-                $consulta = $this->conexion->prepare("update pieza set codigo=?, clase=?, descripcion=?, precio=?, stock=? where codigo=?");
+                $consulta = $this->conexion->prepare('UPDATE pieza set codigo=?, clase=?, descripcion=?, precio=?, stock=? where codigo=?');
                 $param = array($p->getCodigo(), $p->getClase(), $p->getDescripcion(), $p->getPrecio(), $p->getStock(), $codigoAntiguo);
                 if($consulta->execute($param)){
                     if($consulta->rowCount() == 1){
@@ -240,6 +320,17 @@
             }
             return $resultado;
         }
+
+
+//----------------------------------------------------------------****----------------------------------------------------------------\\
+
+
+
+
+
+//----------------------------------------------------------------****----------------------------------------------------------------\\
+
+
 
         
 
