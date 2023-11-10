@@ -14,6 +14,8 @@
                         <div class="col">
                             <label>Perfil</label>
                         </div>
+                        <div class="col">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col">
@@ -28,12 +30,13 @@
                                 <option value="M">Mecánico</option>
                             </select>
                         </div>
-                    </div>
-                        <!--Btn-->
                         <div class="col">
                             <input type="submit" name="crear" value="Crear" class="btn btn-outline-primary">
                             <input type="reset" name="limpiar" value="Cancelar" class="btn btn-outline-primary">
                         </div>
+                    </div>
+                        <!--Btn-->
+                        
                     </div>
                 </form>
             </div>

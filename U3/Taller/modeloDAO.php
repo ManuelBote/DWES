@@ -2,6 +2,8 @@
 
     require_once 'Pieza/pieza.php';
     require_once 'Usuario/usuario.php';
+    require_once 'Vehiculo/vehiculo.php';
+    require_once 'Vehiculo/propietario.php';
 
     class Modelo{
         private $conexion;
@@ -322,17 +324,33 @@
         }
 
 
-//----------------------------------------------------------------****----------------------------------------------------------------\\
+//----------------------------------------------------------------Vehiculo----------------------------------------------------------------\\
 
 
 
 
 
-//----------------------------------------------------------------****----------------------------------------------------------------\\
+//----------------------------------------------------------------Propietario----------------------------------------------------------------\\
 
 
+function obtenerPropietarios(){
+    $resultado = array();
 
+    try {
+        $datos = $this->conexion->query('select * from propietario order by nombre');
+        while($fila = $datos->fetch()){
+            $p = new Propietario($fila['codigo'], $fila['dni'], $fila['nombre'], $fila['telefono'], $fila['email']);
+            $resultado[] = $p;
+        }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
         
+
+//----------------------------------------------------------------****----------------------------------------------------------------\\
 
 
         /**
