@@ -2,8 +2,8 @@
 
     require_once 'Pieza/pieza.php';
     require_once 'Usuario/usuario.php';
-    require_once 'Vehiculo/vehiculo.php';
-    require_once 'Vehiculo/propietario.php';
+    require_once 'Vehiculo/Vehiculo.php';
+    require_once 'Vehiculo/Propietario.php';
 
     class Modelo{
         private $conexion;
@@ -327,7 +327,58 @@
 //----------------------------------------------------------------Vehiculo----------------------------------------------------------------\\
 
 
+function obtenerVehiculos($propietario){
+    $resultado = array();
 
+    try {
+       $consulta = $this->conexion->prepare("SELECT * from vehiculo where propietario = ?");
+       $param =array($propietario);
+       if($consulta->execute($param)){
+        while($fila=$consulta->fetch()){
+            $v = new Vehiculo($fila[0], $fila[1], $fila[2], $fila[3]);
+            $resultado[]=$v;
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
+
+function obtenerVehiculo($matricula){
+    $resultado = null;
+
+    try {
+       $consulta = $this->conexion->prepare("SELECT * from vehiculo where matricula = ?");
+       $param =array($matricula);
+       if($consulta->execute($param)){
+        if($fila=$consulta->fetch()){
+            $resultado = new Vehiculo($fila[0], $fila[1], $fila[2], $fila[3]);
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
+
+function crearVehiculo(Vehiculo $v){
+    $resultado = false;
+    try {
+        $consulta = $this->conexion->prepare('INSERT into vehiculo values(default, ?, ?, ?)');
+        $param = array($v->getPropietario(), $v->getMatricula(), $v->getColor());
+        if($consulta->execute($param)){
+            if($consulta->rowCount() == 1);{
+                $resultado = true;
+            }
+        }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+    return $resultado;
+}
 
 
 //----------------------------------------------------------------Propietario----------------------------------------------------------------\\
@@ -337,7 +388,7 @@ function obtenerPropietarios(){
     $resultado = array();
 
     try {
-        $datos = $this->conexion->query('select * from propietario order by nombre');
+        $datos = $this->conexion->query('SELECT * from propietario order by nombre');
         while($fila = $datos->fetch()){
             $p = new Propietario($fila['codigo'], $fila['dni'], $fila['nombre'], $fila['telefono'], $fila['email']);
             $resultado[] = $p;
@@ -348,7 +399,42 @@ function obtenerPropietarios(){
 
     return $resultado;
 }
+
+function obtenerPropietario($dni){
+    $resultado = null;
+
+    try {
+       $consulta = $this->conexion->prepare("SELECT * from propietario where dni = ?");
+       $param =array($dni);
+       if($consulta->execute($param)){
+        if($fila=$consulta->fetch()){
+            $resultado = new Propietario($fila[0], $fila[1], $fila[2], $fila[3], $fila[4]);
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
         
+
+function crearPropietario(Propietario $p){
+    $resultado = false;
+    try {
+        $consulta = $this->conexion->prepare('INSERT into propietario values(default, ?, ?, ?, ?)');
+        $param = array($p->getDni(), $p->getNombre(), $p->getTelefono(), $p->getEmail());
+        if($consulta->execute($param)){
+            if($consulta->rowCount() == 1);{
+                $resultado = true;
+                $p->setId($this->conexion->lastInsertId());
+            }
+        }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+    return $resultado;
+}
 
 //----------------------------------------------------------------****----------------------------------------------------------------\\
 
