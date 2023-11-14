@@ -1,3 +1,14 @@
+<?php
+
+    function marcarOptionSeleccionado($option, $optionSelect){
+        if($option == $optionSelect){
+            return 'selected=selected';
+        }
+    }
+
+?>
+
+
 <br>
             <div class="container p-2 my-5 border">
                 <form action="" method="post">
@@ -22,8 +33,12 @@
                             <?php $propietario = $bd->obtenerPropietarios() ?>
                             <select name="propietario">
                                 <?php 
+                                if(isset($_SESSION['propietario'])){
+                                    $pSele = $_SESSION['propietario'];
+                                }
                                 foreach($propietario as $p){
-                                    echo '<option value="'.$p->getId().'">'.$p->getDni().' - '.$p->getNombre().'</option>';
+                                    echo '<option value="'.$p->getId().'" '.marcarOptionSeleccionado($p->getId(), $pSele).'>'.
+                                    $p->getDni().' - '.$p->getNombre().'</option>';
                                 }
                                 ?>
                             </select>

@@ -3,7 +3,7 @@
     require_once 'Pieza/pieza.php';
     require_once 'Usuario/usuario.php';
     require_once 'Vehiculo/Vehiculo.php';
-    require_once 'Vehiculo/Propietario.php';
+    require_once 'Propietario/Propietario.php';
 
     class Modelo{
         private $conexion;

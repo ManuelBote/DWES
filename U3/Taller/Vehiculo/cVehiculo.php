@@ -9,7 +9,6 @@
         if(isset($_SESSION['usuario']) and ($_SESSION['usuario']->getPerfil()=='C')){
             header('location:../Usuario/login.php');
         }
-        session_write_close();
         //Boton crear
         //Boton crear
         if(isset($_POST['crear'])){
@@ -49,11 +48,16 @@
                 }
             }
         } else if(isset($_POST['mostrarV'])){
-            $vehiculos = $bd->obtenerVehiculos($_POST['propietario']);
+            //Crear una variable de session con el propietario
+            $_SESSION['propietario']=$_POST['propietario'];
+
+        } else if(isset($_POST['mostrarR'])){
+            $_SESSION['vehiculo'] = $_POST['mostrarR'];
 
         } else if(isset($_POST['borrar'])){
             
         }
+        session_write_close();
     }
 ?>
 <!DOCTYPE html>
@@ -70,7 +74,7 @@
                 require_once '../menu.php';
             ?>
             <br>
-            <h3 style="text-align:center;">GESTION DE USUARIO</h3>
+            <h3 style="text-align:center;">GESTION DE VEHICULOS</h3>
 
         </header>
 
@@ -88,7 +92,7 @@
         </section>
         <section>
             <!-- Seleccionar y visualizar datos de reparacion -->
-            <?php include_once 'datosReparacion.php' ?>
+            <?php include_once '../Reparaciones/datosReparaciones.php' ?>
         </section>
         
 
