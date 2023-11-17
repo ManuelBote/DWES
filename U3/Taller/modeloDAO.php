@@ -4,6 +4,7 @@
     require_once 'Usuario/usuario.php';
     require_once 'Vehiculo/Vehiculo.php';
     require_once 'Propietario/Propietario.php';
+    require_once 'Reparaciones/Reparacion.php';
 
     class Modelo{
         private $conexion;
@@ -364,6 +365,29 @@ function obtenerVehiculo($matricula){
     return $resultado;
 }
 
+function obtenerVehiculoId($id)
+    {
+        $resultado = null;
+        try {
+            $consulta = $this->conexion->prepare('SELECT * from vehiculo 
+            where codigo = ?');
+            $params = array($id);
+            if ($consulta->execute($params)) {
+                if ($fila = $consulta->fetch()) {
+                    $resultado = new Vehiculo(
+                        $fila['codigo'],
+                        $fila['propietario'],
+                        $fila['matricula'],
+                        $fila['color']
+                    );
+                }
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return $resultado;
+    }
+
 function crearVehiculo(Vehiculo $v){
     $resultado = false;
     try {
@@ -436,8 +460,31 @@ function crearPropietario(Propietario $p){
     return $resultado;
 }
 
-//----------------------------------------------------------------****----------------------------------------------------------------\\
+//----------------------------------------------------------------Reparaciones----------------------------------------------------------------\\
 
+
+function obtenerReparaciones($idV){
+    $resultado = null;
+
+    try {
+       $consulta = $this->conexion->prepare("SELECT * from reparacion where coche = ?");
+       $param =array($idV);
+       if($consulta->execute($param)){
+        while($fila=$consulta->fetch()){
+            $r= new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH']);
+            $resultado[] = $r;
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
+
+
+
+//----------------------------------------------------------------Getter & Setter----------------------------------------------------------------\\
 
         /**
          * Get the value of conexion

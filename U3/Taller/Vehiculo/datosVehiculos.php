@@ -34,7 +34,7 @@
                                         echo '<td>'; 
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="modif" value="'.$v->getCodigo().'"><img src="../img/modif25.png"></button>';
                                             echo '<button type="button" class="btn btn-outline-secondary" name="avisar" value="" data-bs-toggle="modal" data-bs-target="#a'.$v->getCodigo().'"><img src="../img/delete25.png"></button>';
-                                            echo '<button type="submit" class="btn btn-outline-secondary" name="reparaciones" value="'.$v->getCodigo().'">Mostrar Reparaciones</button>';
+                                            echo '<button type="submit" class="btn btn-outline-secondary" name="mostrarR" value="'.$v->getCodigo().'">Mostrar Reparaciones</button>';
                                         echo'</td>';
                                     }
                                     echo '</tr>';

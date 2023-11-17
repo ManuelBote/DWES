@@ -82,14 +82,17 @@
             <!--Crear Vehiculo-->
             <?php include_once 'crearVehiculo.php' ?>
         </section>
+        
         <section>
             <!--Comunicar mensajes-->
             <?php include_once '../vermensaje.php' ?>
         </section>
+
         <section>
             <!-- Seleccionar y visualizar datos de vehiculo -->
             <?php include_once 'datosVehiculos.php' ?>
         </section>
+
         <section>
             <!-- Seleccionar y visualizar datos de reparacion -->
             <?php include_once '../Reparaciones/datosReparaciones.php' ?>
