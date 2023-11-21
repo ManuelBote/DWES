@@ -8,9 +8,9 @@
 
     class Modelo{
         private $conexion;
-        const URL='mysql:host=127.0.0.1;port=3307;dbname=taller';
+        const URL='mysql:host=127.0.0.1;port=3306;dbname=taller';
         const USUARIO='root';
-        const PS='root';
+        const PS='';
         
 
         function __construct()
