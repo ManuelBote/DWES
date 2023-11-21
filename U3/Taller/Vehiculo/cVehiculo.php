@@ -50,9 +50,19 @@
         } else if(isset($_POST['mostrarV'])){
             //Crear una variable de session con el propietario
             $_SESSION['propietario']=$_POST['propietario'];
+            //Limpiampos el vehiculo seleccionado de la sesion anterior
+            unset($_SESSION['vehiculo']);
 
         } else if(isset($_POST['mostrarR'])){
             $_SESSION['vehiculo'] = $_POST['mostrarR'];
+
+        } else if(isset($_POST["crearR"])){
+            $r = new Reparacion(0, $_SESSION['vehiculo'], time(), 0, false, $_SESSION['usuario']->getId(), 0);
+            if($bd->crearReparacion($r)){
+                $mensaje = array('i', 'Reparacion creada con codigo '. $r->getId());
+            } else{
+                $mensaje=array('e', 'Error al crear la reparacion');
+            }
 
         } else if(isset($_POST['borrar'])){
             
@@ -82,7 +92,7 @@
             <!--Crear Vehiculo-->
             <?php include_once 'crearVehiculo.php' ?>
         </section>
-        
+
         <section>
             <!--Comunicar mensajes-->
             <?php include_once '../vermensaje.php' ?>

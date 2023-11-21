@@ -467,7 +467,7 @@ function obtenerReparaciones($idV){
     $resultado = null;
 
     try {
-       $consulta = $this->conexion->prepare("SELECT * from reparacion where coche = ?");
+       $consulta = $this->conexion->prepare("SELECT * from reparacion where coche = ? order by fechaHora desc");
        $param =array($idV);
        if($consulta->execute($param)){
         while($fila=$consulta->fetch()){
@@ -478,6 +478,25 @@ function obtenerReparaciones($idV){
     } catch (PDOException $th) {
         echo $th->getMessage();
     }
+
+    return $resultado;
+}
+
+function crearReparacion(Reparacion $r){
+    $resultado = false;
+
+    try {
+        $consulta = $this->conexion-> prepare('INSERT into reparacion values (default, ?, now(), 0, false, ?, 0)');
+        $param = array($r->getCoche(), $r->getUsuario());
+        if($consulta->execute($param)){
+            if ($consulta->rowCount()==1){
+                $resultado= true;
+                $r->setId($this->conexion->lastInsertId());
+            }
+        }
+     } catch (PDOException $th) {
+         echo $th->getMessage();
+     }
 
     return $resultado;
 }

@@ -5,6 +5,8 @@
             ?>
             <div class="container p-5 my-5 border">
                 <form action="" method="post">
+                    <input type="submit" class="btn btn-outline-secondary" name="crearR" value="+"/>
+                    <hr/>
                     <table class="table table-striped">
                         <thead>
                             <tr>
