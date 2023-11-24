@@ -29,7 +29,7 @@
                     $mensaje=array('e', 'Ya existe un vehiculo con esa matricula');
                 }
             }
-        } else if(isset($_POST['insertP'])){
+        } elseif(isset($_POST['insertP'])){
             if(empty($_POST['dni']) or empty($_POST['nombre']) or empty($_POST['telefono'])){
                 $mensaje=array('e', 'Debe rellenar todos los campos');
             } else{
@@ -47,16 +47,17 @@
                     $mensaje=array('e', 'Ya existe un propietario con ese dni');
                 }
             }
-        } else if(isset($_POST['mostrarV'])){
+        } elseif(isset($_POST['mostrarV'])){
             //Crear una variable de session con el propietario
             $_SESSION['propietario']=$_POST['propietario'];
             //Limpiampos el vehiculo seleccionado de la sesion anterior
             unset($_SESSION['vehiculo']);
+            unset($_SESSION['reparacion']);
 
-        } else if(isset($_POST['mostrarR'])){
+        } elseif(isset($_POST['mostrarR'])){
             $_SESSION['vehiculo'] = $_POST['mostrarR'];
 
-        } else if(isset($_POST["crearR"])){
+        } elseif(isset($_POST["crearR"])){
             $r = new Reparacion(0, $_SESSION['vehiculo'], time(), 0, false, $_SESSION['usuario']->getId(), 0);
             if($bd->crearReparacion($r)){
                 $mensaje = array('i', 'Reparacion creada con codigo '. $r->getId());
@@ -64,7 +65,18 @@
                 $mensaje=array('e', 'Error al crear la reparacion');
             }
 
-        } else if(isset($_POST['borrar'])){
+        } elseif(isset($_POST['updateR'])){
+            if($bd->modificarReparacion($_POST['updateR'], $_POST['tiempo'], (isset($_POST['pagado'])?true:false), $_POST['precioH'])){
+                $mensaje = array('i', 'Reparacion modificada');
+            } else{
+                $mensaje=array('e', 'Error al modificar la reparacion');
+            }
+
+        } elseif(isset($_POST['datosR'])){
+            $_SESSION['reparacion'] = $_POST['datosR'];
+            header('location:../Reparaciones/cReparacion.php');
+
+        } elseif(isset($_POST['borrar'])){
             
         }
         session_write_close();

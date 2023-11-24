@@ -482,6 +482,24 @@ function obtenerReparaciones($idV){
     return $resultado;
 }
 
+function obtenerReparacion($id){
+    $resultado = null;
+
+    try {
+       $consulta = $this->conexion->prepare("SELECT * from reparacion where id = ?");
+       $param =array($id);
+       if($consulta->execute($param)){
+        while($fila=$consulta->fetch()){
+            $resultado= new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH']);
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
+
 function crearReparacion(Reparacion $r){
     $resultado = false;
 
@@ -499,6 +517,23 @@ function crearReparacion(Reparacion $r){
      }
 
     return $resultado;
+}
+
+function modificarReparacion(int $id, float $horas, bool $pagado, float $precioH){
+    try {
+        $consulta = $this->conexion->prepare('UPDATE reparacion set tiempo=?, pagado=?, precioH=? where id=?');
+        $param = array($horas, $pagado, $precioH, $id);
+        if($consulta->execute($param)){
+            if($consulta->rowCount()==1){
+                return true;
+            }
+        }
+        
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return false;
 }
 
 

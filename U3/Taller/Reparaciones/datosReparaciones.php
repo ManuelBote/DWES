@@ -27,13 +27,13 @@
                                     if(isset($_POST['modifR']) and $_POST['modifR']==$r->getId()){
                                         //Pintar campos para modificar
                                         echo '<td><input type="text" name="id" value="'.$r->getId().'" disabled="disabled"/></td>';    
-                                        echo '<td><input type="date" name="fecha" value="'.date('d/m/Y H:i', strtotime($r->getFecha())).'"/></td>';
-                                        echo '<td><input type="number name="tiempo" step="0.1" value="'.$r->getTiempo().'"/></td>';
-                                        echo '<td><input type="checkbox"'.($r->getPagado()?'checked="checked"':"").'"/></td>';
-                                        echo '<td><input type="text" name="usuario" value="'.$bd->obtenerUsuarioId($r->getUsuario())->getNombre().'"/></td>';
+                                        echo '<td><input type="date" name="fecha" value="'.date('d/m/Y H:i', strtotime($r->getFecha())).'"  disabled="disabled"/></td>';
+                                        echo '<td><input type="number" name="tiempo" step="0.1" value="'.$r->getTiempo().'"/></td>';
+                                        echo '<td><input type="checkbox" name="pagado"' .($r->getPagado()?'checked="checked"':"").'/></td>';
+                                        echo '<td><input type="text" name="usuario" value="'.$bd->obtenerUsuarioId($r->getUsuario())->getNombre().'"  disabled="disabled"/></td>';
                                         echo '<td><input type="number" name="precioH" step="0.01" value="'.$r->getPrecioH().'"/></td>';
                                         echo '<td>'; 
-                                            echo '<button type="submit" class="btn btn-outline-secondary" name="update" value="'.$r->getId().'">Guardar</button>';
+                                            echo '<button type="submit" class="btn btn-outline-secondary" name="updateR" value="'.$r->getId().'">Guardar</button>';
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="cancelar">Cancelar</button>';
                                         echo'</td>';
                                     }else{
@@ -46,7 +46,7 @@
                                         echo '<td>'; 
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="modifR" value="'.$r->getId().'"><img src="../img/modif25.png"></button>';
                                             echo '<button type="button" class="btn btn-outline-secondary" name="avisarR" value="" data-bs-toggle="modal" data-bs-target="#r'.$r->getId().'"><img src="../img/delete25.png"></button>';
-                                            echo '<button type="submit" class="btn btn-outline-secondary" name="mostrarR" value="'.$r->getId().'">Ver</button>';
+                                            echo '<button type="submit" class="btn btn-outline-secondary" name="datosR" value="'.$r->getId().'">Ver</button>';
                                         echo'</td>';
                                     }
                                     echo '</tr>';
