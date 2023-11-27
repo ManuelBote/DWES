@@ -8,7 +8,7 @@
 
                 //Obtener piezas
                 if($bd->getConexion()!=null){
-                    $piezas = $bd->obtenerPiezas();
+                    $piezas = $bd->obtenerPieza();
             ?>
             <div class="container p-5 my-5 border">
                 <form action="" method="post">

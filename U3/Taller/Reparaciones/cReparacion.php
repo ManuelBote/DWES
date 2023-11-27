@@ -14,8 +14,34 @@
 
         }
 
-        if(isset($_POST['crear'])){
+        if(isset($_POST['crearPR'])){
            //Crear una pieza en reparacion
+           //Chequear que este relleno la pieza y la cantidad y que la cantidad no sea negativa
+           if(empty($_POST['piezas']) or empty($_POST['cantidad']) or $_POST['cantidad']<1){
+                $mensaje = array('e','Error inserte correctamente los datos');
+           } else{
+            $pieza = $bd->obtenerPieza($_POST['piezas']);
+            if($pieza->getStock()<$_POST['cantidad']){
+                $mensaje = array('e','Error no hay stock suficiente');
+            } else{
+                //Si la pieza ya se ha usado en esa reparacion hay que hacer update e incrementar la cantidad
+                //Sino hay que hacer in insertar
+                $pr = $bd->obtenerPiezaReparacion($_SESSION['reparacion'], $pieza->getCodigo());
+                if($pr == null){
+                    //Insert
+                    if($bd->insertarPR($_SESSION['reparacion'], $pieza, $_POST['cantidad'])){
+                        $mensaje = array('i','Pieza insertada');
+                    } else{
+                        $mensaje = array('e','Error al insertar pieza');
+                    }
+
+                } else{
+                    //Update
+
+                }
+            }
+           }
+           //Chequear que haya stock
 
         }else if(isset($_POST['update'])){
            //Modificar pieza reparacion
