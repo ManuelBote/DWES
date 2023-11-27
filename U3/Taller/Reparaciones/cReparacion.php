@@ -37,6 +37,11 @@
 
                 } else{
                     //Update
+                    if($bd->modificarPR($_SESSION['reparacion'], $pieza, $_POST['cantidad'])){
+                        $mensaje = array('i','Pieza modificada');
+                    } else{
+                        $mensaje = array('e','Error al modificar pieza');
+                    }
 
                 }
             }
@@ -45,6 +50,15 @@
 
         }else if(isset($_POST['update'])){
            //Modificar pieza reparacion
+           //Obtener la pieza a modificar 
+           $pr = $bd->obtenerpiezareparacion($_SESSION['reparacion'], $_POST['update']);
+           if($pr!=null){
+            if($bd->modificarCantidad($pr, $_POST['cantidad'])){
+                $mensaje = array('i','Pieza modificada');
+            } else{
+                $mensaje = array('e','Error al modificar pieza');
+            }
+           }
 
         } else if(isset($_POST['borrar'])){
             //Borrar datos reparacion
