@@ -48,7 +48,7 @@
            }
            //Chequear que haya stock
 
-        }else if(isset($_POST['update'])){
+        }elseif(isset($_POST['update'])){
            //Modificar pieza reparacion
            //Obtener la pieza a modificar 
            $pr = $bd->obtenerpiezareparacion($_SESSION['reparacion'], $_POST['update']);
@@ -60,9 +60,15 @@
             }
            }
 
-        } else if(isset($_POST['borrar'])){
+        } elseif(isset($_POST['borrar'])){
             //Borrar datos reparacion
             
+        } elseif(isset($_POST['pagarR'])){
+            if($bd->pagarR($_POST['pagarR'])){
+                $mensaje = array('i','Reparacion pagada');
+            } else{
+                $mensaje = array('e','Error al pagar la reparacion');
+            }
         }
         session_write_close();
     }

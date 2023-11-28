@@ -58,7 +58,7 @@
             $_SESSION['vehiculo'] = $_POST['mostrarR'];
 
         } elseif(isset($_POST["crearR"])){
-            $r = new Reparacion(0, $_SESSION['vehiculo'], time(), 0, false, $_SESSION['usuario']->getId(), 0);
+            $r = new Reparacion(0, $_SESSION['vehiculo'], time(), 0, false, $_SESSION['usuario']->getId(), 0, 0);
             if($bd->crearReparacion($r)){
                 $mensaje = array('i', 'Reparacion creada con codigo '. $r->getId());
             } else{

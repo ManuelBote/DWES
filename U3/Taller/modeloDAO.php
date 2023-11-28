@@ -472,7 +472,7 @@ function obtenerReparaciones($idV){
        $param =array($idV);
        if($consulta->execute($param)){
         while($fila=$consulta->fetch()){
-            $r= new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH']);
+            $r= new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH'], $fila['importeTotal']);
             $resultado[] = $r;
         }
        }
@@ -491,7 +491,7 @@ function obtenerReparacion($id){
        $param =array($id);
        if($consulta->execute($param)){
         while($fila=$consulta->fetch()){
-            $resultado= new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH']);
+            $resultado= new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH'], $fila['importeTotal']);
         }
        }
     } catch (PDOException $th) {
@@ -537,6 +537,25 @@ function modificarReparacion(int $id, float $horas, bool $pagado, float $precioH
     return false;
 }
 
+function pagarR($idR){
+    $resultado = false;
+
+    try {
+       $consulta = $this->conexion->prepare('SELECT pagarReparacion(?)');
+       $params = array($idR);
+       if($consulta->execute($params)){
+        if($fila = $consulta->fetch()){
+            $resultado = true;
+            $total = $fila['total']; //Esta es la forma de recuperar lo que devuelve la funcion
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
+
 //----------------------------------------------------------------PiezaReparacion----------------------------------------------------------------\\
 
 
@@ -557,7 +576,7 @@ function obtenerPiezaReparacion($id, $codigo){
                 $pieza->rellenar($fila['codigo'], $fila['clase'], $fila['descripcion'], $fila['precio'], $fila['stock']);
 
                 $resultado = new PiezaReparacion(
-                    new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH']),
+                    new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH'], $fila['importeTotal']),
                     $pieza,
                     $fila['cantidad'],
                     $fila['precio']
@@ -588,7 +607,7 @@ function obtenerPiezasReparacion($reparacion){
                 $pieza->rellenar($fila['codigo'], $fila['clase'], $fila['descripcion'], $fila['precio'], $fila['stock']);
 
                 $pr = new PiezaReparacion(
-                    new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH']),
+                    new Reparacion($fila['id'], $fila['coche'], $fila['fechaHora'], $fila['tiempo'], $fila['pagado'], $fila['usuario'], $fila['precioH'], $fila['importeTotal']),
                     $pieza,
                     $fila['cantidad'],
                     $fila['precio']

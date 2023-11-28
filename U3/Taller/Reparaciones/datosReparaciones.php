@@ -16,6 +16,7 @@
                                 <th>Pagado</th>
                                 <th>Usuario</th>
                                 <th>Precio/Hora</th>
+                                <th>Total reparacion</th>
                                 <th></th>
 
                             </tr>
@@ -32,6 +33,7 @@
                                         echo '<td><input type="checkbox" name="pagado"' .($r->getPagado()?'checked="checked"':"").'/></td>';
                                         echo '<td><input type="text" name="usuario" value="'.$bd->obtenerUsuarioId($r->getUsuario())->getNombre().'"  disabled="disabled"/></td>';
                                         echo '<td><input type="number" name="precioH" step="0.01" value="'.$r->getPrecioH().'"/></td>';
+                                        echo '<td><input type="number" name="impTotal" disabled="disabled" value="'.$r->getImporteTotal().'"/></td>';
                                         echo '<td>'; 
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="updateR" value="'.$r->getId().'">Guardar</button>';
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="cancelar">Cancelar</button>';
@@ -43,10 +45,12 @@
                                         echo '<td><input type="checkbox"'.($r->getPagado()?'checked="checked"':"").'" disabled="true"/></td>';
                                         echo '<td>'.$bd->obtenerUsuarioId($r->getUsuario())->getNombre().'</td>';
                                         echo '<td>'.$r->getPrecioH().'</td>';
+                                        echo '<td>'.$r->getImporteTotal().'</td>';
                                         echo '<td>'; 
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="modifR" value="'.$r->getId().'"><img src="../img/modif25.png"></button>';
                                             echo '<button type="button" class="btn btn-outline-secondary" name="avisarR" value="" data-bs-toggle="modal" data-bs-target="#r'.$r->getId().'"><img src="../img/delete25.png"></button>';
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="datosR" value="'.$r->getId().'">Ver</button>';
+                                            echo '<button type="submit" class="btn btn-outline-secondary" name="pagarR" value="'.$r->getId().'">Pagar</button>';
                                         echo'</td>';
                                     }
                                     echo '</tr>';
