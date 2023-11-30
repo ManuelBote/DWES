@@ -546,6 +546,7 @@ function pagarR($idR){
        if($consulta->execute($params)){
         if($fila = $consulta->fetch()){
             $resultado = true;
+            //No usamos el total que devulve la funcion
             $total = $fila['total']; //Esta es la forma de recuperar lo que devuelve la funcion
         }
        }
@@ -554,6 +555,30 @@ function pagarR($idR){
     }
 
     return $resultado;
+}
+
+function obtenerDetalleReparacion($idR){
+    $resultado = array();
+
+    try {
+        $consulta = $this->conexion->prepare('CALL generarFactura(?)');
+        $param = array($idR);
+        if($consulta->execute($param)){
+            if($fila=$consulta->fetch()){
+                $resultado[] = array('Concepto'=> $fila['descripcion'], 'Cantidad'=> $fila['cantidad'],
+                'Importe'=> $fila['importe'], 'Total'=> $fila['total']);
+            }
+
+            $consulta->nextRowset();
+            while($fila=$consulta->fetch()){
+                $resultado[] = array('Concepto'=> $fila['descripcion'], 'Cantidad'=> $fila['cantidad'],
+                'Importe'=> $fila['importe'], 'Total'=> $fila['total']);
+            }
+        }
+
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
 }
 
 //----------------------------------------------------------------PiezaReparacion----------------------------------------------------------------\\

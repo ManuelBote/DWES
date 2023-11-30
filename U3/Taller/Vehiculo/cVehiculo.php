@@ -78,6 +78,26 @@
 
         } elseif(isset($_POST['borrar'])){
             
+
+        } elseif(isset($_POST['pagarR'])){
+            //Falta chequeo de si la reparacion existe
+            if($bd->pagarR($_POST['pagarR'])){
+                $mensaje = array('i','Reparacion pagada');
+            } else{
+                $mensaje = array('e','Error al pagar la reparacion');
+            }
+
+        } elseif(isset($_POST['enviarR'])){
+            $r = $bd->obtenerReparacion($_POST['enviarR']);
+            if($r!=null){
+                $detalle = $bd->obtenerDetalleReparacion($r->getId());
+                var_export($detalle);
+                //enviarCorreo($r, $detalle);
+
+            } else{
+                $mensaje = array('e','La reparacion no existe o no esta pagada');
+
+            }
         }
         session_write_close();
     }

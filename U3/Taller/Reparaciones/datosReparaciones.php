@@ -51,6 +51,7 @@
                                             echo '<button type="button" class="btn btn-outline-secondary" name="avisarR" value="" data-bs-toggle="modal" data-bs-target="#r'.$r->getId().'"><img src="../img/delete25.png"></button>';
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="datosR" value="'.$r->getId().'">Ver</button>';
                                             echo '<button type="submit" class="btn btn-outline-secondary" name="pagarR" value="'.$r->getId().'">Pagar</button>';
+                                            echo '<button type="submit" class="btn btn-outline-secondary" name="enviarR" value="'.$r->getId().'">Enviar</button>';
                                         echo'</td>';
                                     }
                                     echo '</tr>';
