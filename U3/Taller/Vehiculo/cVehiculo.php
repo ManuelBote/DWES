@@ -1,5 +1,6 @@
 <?php
     require_once '../ModeloDAO.php';
+    require_once '../correo.php';
     $bd = new Modelo();
     if($bd->getConexion()==null){
         $mensaje = array('e','Error no hay conexion con la base de datos');
@@ -91,8 +92,8 @@
             $r = $bd->obtenerReparacion($_POST['enviarR']);
             if($r!=null){
                 $detalle = $bd->obtenerDetalleReparacion($r->getId());
-                var_export($detalle);
-                //enviarCorreo($r, $detalle);
+                //var_export($detalle);
+                enviarCorreo($r, $detalle);
 
             } else{
                 $mensaje = array('e','La reparacion no existe o no esta pagada');
