@@ -90,15 +90,21 @@
 
         } elseif(isset($_POST['enviarR'])){
             $r = $bd->obtenerReparacion($_POST['enviarR']);
-            if($r!=null){
-                $detalle = $bd->obtenerDetalleReparacion($r->getId());
-                //var_export($detalle);
-                enviarCorreo($r, $detalle);
+            $coche =$bd->obtenerVehiculoId($r->getCoche()); 
+            $propietario = $bd->obtenerPropietarioId($coche->getPropietario());
+            if($propietario->getEmail()!= null){
+                 if($r!=null){
+                    $detalle = $bd->obtenerDetalleReparacion($r->getId());
+                    //var_export($detalle);
+                    enviarCorreo($bd, $r, $detalle, $propietario);
 
+                } else{
+                    $mensaje = array('e','La reparacion no existe o no esta pagada');
+                }
             } else{
-                $mensaje = array('e','La reparacion no existe o no esta pagada');
-
+                $mensaje = array('e','No hay correo en este usuario');
             }
+           
         }
         session_write_close();
     }

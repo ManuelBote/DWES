@@ -19,13 +19,13 @@ create table propietario(
     email varchar(320) null
 )engine innodb;
 insert into propietario values
-	(null, '1A', 'Paco Pérez','123456789', null),
-    (null, '2A', 'Nuria Roca', '675432123','nuriaroca@gmail.com'),
-    (null, '3A', 'Pablo Motos', '897665544', 'pablomotos@gmail.com'),
-    (null, '4A', 'Mónica Madina','456789123', null),
-    (null, '5A', 'Esther Gómez','567891234', null),
-    (null, '6A', 'Pedro Picapiedra','678912345', null),
-    (null, '7A', 'Bilma Picapiedra','789123456', null);
+	(null, '1A', 'Paco Pérez','123456789', 'mbotez01@educarex.es'),
+    (null, '2A', 'Nuria Roca', '675432123','mbotez01@educarex.es'),
+    (null, '3A', 'Pablo Motos', '897665544', 'mbotez01@educarex.es'),
+    (null, '4A', 'Mónica Madina','456789123', 'mbotez01@educarex.es'),
+    (null, '5A', 'Esther Gómez','567891234', 'mbotez01@educarex.es'),
+    (null, '6A', 'Pedro Picapiedra','678912345', 'mbotez01@educarex.es'),
+    (null, '7A', 'Bilma Picapiedra','789123456', 'mbotez01@educarex.es');
 create table vehiculo(
 	codigo int auto_increment primary key,
     propietario int not null,
@@ -98,8 +98,8 @@ delimiter //
 create function pagarReparacion(pRep int) returns float deterministic
 begin
 	declare vImporte float default 0;
-    declare tiempo float;
-    declare precioH float;
+    declare vTiempo float;
+    declare vPrecioH float;
   
 	 select sum(importe*cantidad) into vImporte
 				from piezaReparacion
@@ -110,10 +110,10 @@ begin
 	end if;
     
     -- Obtener el tiempo total de la reparacion y el precio por hora
-	select tiempo,precioH into tiempo, precioH from reparacion where id=pRep;
+	select tiempo,precioH into vTiempo, vPrecioH from reparacion where id=pRep;
     
-    if(tiempo is not null and precioH is not null)then
-		set vImporte = vImporte + (tiempo * precioH);
+    if(vTiempo is not null and vPrecioH is not null)then
+		set vImporte = vImporte + (vTiempo * vPrecioH);
     end if;
     -- Actualizar el importe total en la reparacion
     update reparacion set importeTotal = vImporte, pagado=true where id = pRep;

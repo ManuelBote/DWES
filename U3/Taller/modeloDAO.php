@@ -442,6 +442,24 @@ function obtenerPropietario($dni){
 
     return $resultado;
 }
+
+function obtenerPropietarioId($id){
+    $resultado = null;
+
+    try {
+       $consulta = $this->conexion->prepare("SELECT * from propietario where codigo = ?");
+       $param =array($id);
+       if($consulta->execute($param)){
+        if($fila=$consulta->fetch()){
+            $resultado = new Propietario($fila[0], $fila[1], $fila[2], $fila[3], $fila[4]);
+        }
+       }
+    } catch (PDOException $th) {
+        echo $th->getMessage();
+    }
+
+    return $resultado;
+}
         
 
 function crearPropietario(Propietario $p){
@@ -505,7 +523,7 @@ function crearReparacion(Reparacion $r){
     $resultado = false;
 
     try {
-        $consulta = $this->conexion-> prepare('INSERT into reparacion values (default, ?, now(), 0, false, ?, 0)');
+        $consulta = $this->conexion-> prepare('INSERT into reparacion values (default, ?, now(), 0, false, ?, 0, 0)');
         $param = array($r->getCoche(), $r->getUsuario());
         if($consulta->execute($param)){
             if ($consulta->rowCount()==1){
@@ -541,13 +559,14 @@ function pagarR($idR){
     $resultado = false;
 
     try {
-       $consulta = $this->conexion->prepare('SELECT pagarReparacion(?)');
+       $consulta = $this->conexion->prepare('SELECT pagarReparacion(?) as total');
        $params = array($idR);
        if($consulta->execute($params)){
         if($fila = $consulta->fetch()){
             $resultado = true;
             //No usamos el total que devulve la funcion
-            $total = $fila['total']; //Esta es la forma de recuperar lo que devuelve la funcion
+            //Esta es la forma de recuperar lo que devuelve la funcion
+            $total = $fila['total'];
         }
        }
     } catch (PDOException $th) {
