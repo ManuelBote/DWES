@@ -598,6 +598,8 @@ function obtenerDetalleReparacion($idR){
     } catch (PDOException $th) {
         echo $th->getMessage();
     }
+
+    return $resultado;
 }
 
 //----------------------------------------------------------------PiezaReparacion----------------------------------------------------------------\\
