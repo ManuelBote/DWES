@@ -19,11 +19,8 @@
                     $_SESSION['usuario']=$usuario;
                     header('location:mensajes.php');
                 }
-
             }
-        }
-
-     
+        }    
      }
 ?>
 
