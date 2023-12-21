@@ -25,10 +25,45 @@
             if($_POST['cantidad']<=0){
                 $mensaje = 'ERROR, No puedes pedir menos de 0 productos';
             } else{
-                $productoCesta = $bd->agregarProductoCesta($_POST['producto'], $_POST['cantidad']);
-                $_SESSION['cesta'][] = $productoCesta;
+                $enCesta = false;
+                foreach($_SESSION['cesta'] as $posicion=>$c){
+
+                    if($c->getProducto()->getCodigo() == $_POST['producto']){
+                        $enCesta = true;
+                        $cantidadTotal = $c->getCantidad() + $_POST['cantidad'];
+                        $pCesta = new Producto($c->getProducto()->getCodigo(), $c->getProducto()->getNombre(),
+                         $c->getProducto()->getPrecio());
+
+                        $_SESSION['cesta'][$posicion] = new ProductoEnCesta($pCesta, $cantidadTotal);
+                    }
+                }
+                if($enCesta == false){
+                   $productoCesta = $bd->agregarProductoCesta($_POST['producto'], $_POST['cantidad']);
+                    $_SESSION['cesta'][] = $productoCesta; 
+                }
+            
             }
             
+        }
+        
+        //Boton borrar
+        if(isset($_POST['cBorrar'])){
+            foreach($_SESSION['cesta'] as $posicion=>$c){
+                if($c->getProducto()->getCodigo() == $_POST['cBorrar'][0]){
+
+                    if($_POST['cBorrar'][1]<=0){
+                        unset($_SESSION['cesta'][$posicion]);
+                        array_values($_SESSION['cesta']);
+
+                    } else{
+                        $pCesta = new Producto($c->getProducto()->getCodigo(), $c->getProducto()->getNombre(),
+                         $c->getProducto()->getPrecio());
+
+                        $_SESSION['cesta'][$posicion] = new ProductoEnCesta($pCesta, $_POST['cBorrar'][1]);
+                    }
+                    
+                }
+            }
         }
 
         //Boton de crear pedido
@@ -133,6 +168,7 @@
                     <td><b>Producto</b></td>
                     <td><b>Cantidad</b></td>
                     <td><b>Precio</b></td>
+                    <td><b>Borrar</b></td>
                 </tr>
                                 
                 <?php
@@ -140,8 +176,16 @@
                         foreach($_SESSION['cesta'] as $c){
                             echo '<tr>';
                                 echo '<td>'.$c->getProducto()->getNombre().'</td>';
-                                echo '<td>'.$c->getCantidad().'</td>';
-                                echo '<td>'.($c->getProducto()->getPrecio()*$c->getCantidad()).'€</td>';
+                                if(isset($_POST['borrar']) && $_POST['borrar']==$c->getProducto()->getCodigo()){
+                                    echo '<td><input type="number" value="'.$c->getCantidad().'" name="cantidadB" /></td>';
+                                    echo '<td>'.($c->getProducto()->getPrecio()*$c->getCantidad()).'€</td>';
+                                    echo '<td><button type="submit" name="cBorrar" 
+                                    value="'.array($c->getProducto()->getCodigo(), $c->getCantidad()).'">Confirmar</button></td>';
+                                } else{
+                                    echo '<td>'.$c->getCantidad().'</td>';
+                                    echo '<td>'.($c->getProducto()->getPrecio()*$c->getCantidad()).'€</td>';
+                                    echo '<td><button type="submit" name="borrar" value="'.$c->getProducto()->getCodigo().'">Borrar</button></td>';
+                                }
                             echo '</tr>';
                         }
                     }
