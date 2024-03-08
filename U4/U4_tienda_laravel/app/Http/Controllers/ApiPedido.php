@@ -124,4 +124,15 @@ class ApiPedido extends Controller
     {
         //
     }
+
+    public function obtenerPedidoCliente(string $id){
+        $pedidos = Pedido::where("cliente_id", $id)->get();
+        $detalles = array();
+        foreach($pedidos as $p){
+            foreach($p->detalle() as $d){
+                $detalles[] = $d;
+            }
+        }
+        return $detalles;
+    }
 }

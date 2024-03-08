@@ -22,10 +22,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResources([
-    'apiProducto'=>ApiProducto::class, 
+    'apiProductos'=>ApiProducto::class, 
     'apiLogin'=>ApiLogin::class, 
     'apiPedido'=>ApiPedido::class
     ]);
 
 //Crear una ruta api cara loguar a un cliente
 Route::post('cliente', [ApiLogin::class, 'login']);
+
+//Ruta pedidos cliente
+Route::get('apiVerPedidos/{idC}', [ApiPedido::class, 'obtenerPedidoCliente']);

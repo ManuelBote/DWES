@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX</title>
+</head>
+<body>
+
+    <button onclick="cargarReservas()">Reservas</button>
+
+    <table style="border: 1px solid black;">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Viaje</th>
+                <th>Fecha</th>
+                <th>Cliene</th>
+                <th>Nº Personas</th>
+                <th>Total</th>
+                <th>Anulada</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="cuerpoTabla">
+            
+        </tbody>
+    </table>
+    
+    <script>
+        const url ="http://localhost/DWES/U4/Ex-Laravel/public/api/apiReservas";
+
+        function cargarReservas(){
+            var servicio = new XMLHttpRequest();
+                servicio.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var reservas = JSON.parse(this.responseText);
+
+                    document.getElementById("cuerpoTabla").innerHTML = "";
+                    for (var i = 0; i < reservas.length; i++) {
+                    document.getElementById("cuerpoTabla").innerHTML +=
+                        "<tr>" + 
+                        "<td scope='row'>" + reservas[i].id + "</td>" +
+                        "<td>" + reservas[i].viaje_id + "</td>" +
+                        "<td>" +reservas[i].fechaS + "</td>" +
+                        "<td>" + reservas[i].nombreC + "</td>" +
+                        "<td>" + reservas[i].nPersonas + "</td>" +
+                        "<td>" + reservas[i].total + "</td>" +
+                        "<td>" + reservas[i].anulada + "</td>" +
+                        "<td><button type='button' onclick='anular(" + reservas[i].id + ")' class='btn btn-info'>Comprar</button></td>" +
+                        "</tr>";
+                    }
+                }
+                };
+                servicio.open("GET", url , true);
+                servicio.send();
+        }
+
+        function anular(idP) {
+            var servicio = new XMLHttpRequest();
+            servicio.open("PUT", url+"/"+idP, true);
+            servicio.setRequestHeader("Content-Type", "application/json");
+            servicio.onreadystatechange = function () {
+                if (servicio.readyState == 4) {
+                if (servicio.status == 200) {
+                    alert("Reserva Anulada");
+                    cargarReservas();
+                } else {
+                    alert(servicio.status + ": " + servicio.responseText);
+                }
+                }
+            };
+            servicio.send();
+            }
+    </script>
+</body>
+</html>

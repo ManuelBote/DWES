@@ -21,7 +21,7 @@ class LoginC extends Controller
     function loguear(Request $r){
         //Abrir sesion
         $r->validate([
-            'email'=>'required|email:rfc,dns',
+            'email'=>'required',
             'ps'=>'required'
         ]);
 
@@ -45,7 +45,7 @@ class LoginC extends Controller
         //Crea un usuario
         $r->validate([
             'nombre'=>'required|string', //Requerido y formato string
-            'email'=>'required|email|unique:App\Models\User,email|email:rfc,dns',
+            'email'=>'required|email|unique:App\Models\User,email',
             'ps1'=> 'required',
             'ps2'=> 'required|same:ps1',
             'telf'=>'required',
